@@ -1,6 +1,6 @@
 # wait-for-endpoint
 
-https://github.com/ytvnr/wait-for-endpoint/workflows/Sh%20analysis/badge.svg
+![example workflow file path](https://github.com/ytvnr/wait-for-endpoint/workflows/Sh%20analysis/badge.svg)
 
 ./wait-for-endpoint is a sh script to wait for an HTTP endpoint to be available.
 It is useful for synchronizing the spin-up of interdependant services.
