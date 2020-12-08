@@ -1,4 +1,4 @@
-name: Sh analysis
+name: Shell analysis
 
 on:
   push:
