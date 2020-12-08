@@ -1,17 +1,18 @@
 # wait-for-endpoint
 
-https://github.com/ytvnr/wait-for-endpoint/workflows/Sh%20analysis/badge.svg
+![example workflow file path](https://github.com/ytvnr/wait-for-endpoint/workflows/Sh%20analysis/badge.svg)
 
-./wait-for-endpoint is a sh script to wait for an HTTP endpoint to be available.
-It is useful for synchronizing the spin-up of interdependant services.
+`wait-for-endpoint` is a sh script that you can use to wait for an **HTTP** endpoint to be available.
+It can be useful in order to synchronize the spin-up of interdependent services.
 
-This script is inspired by [wait-for-it](https://github.com/vishnubob/wait-for-it) and [wait-for](https://github.com/eficode/wait-for).
-They wait for a service to be up by testing a host and TCP port.
+This script is inspired by [wait-for-it](https://github.com/vishnubob/wait-for-it) and [wait-for](https://github.com/eficode/wait-for) that both wait for a _TCP_ port to be open on a host.
 
-`wait-for-endpoint.sh` is useful when you want to test a endpoint to check the functional availability of a service.
-You can use for linked docker containers, CI workflows, etc.
+`wait-for-endpoint` deals with **HTTP** endpoints and checks the `http` status of the response returned by the enpoint.
 
-⚠️ You will need to install `cURL`.
+`wait-for-endpoint.sh` is useful when you want to test an endpoint to check the functional availability of a service.
+You can use it in the context of linked docker containers, CI workflows, etc.
+
+⚠️ You will need to have [cURL](https://github.com/curl/curl) available.
 
 ## Usage
 
@@ -38,13 +39,13 @@ sh ./wait-for-endpoint.sh host(:port)/path [-q] [-d delay] [-i interval] [-t tim
 
 ## Examples
 
-For example, let's test to see if we can access port 80 on `www.google.com`,
+For example, let's test if we can access port 80 on `www.google.com`,
 and if it is available, echo the message `google is up`.
 
 ```text
 $ sh ./wait-for-endpoint.sh www.google.com:80 -- echo "google is up"
 Attempt 0 of 6.
-Connection to google.fr succeeded with status: 200. Executing command... 
+Connection to google.fr succeeded with status: 200. Executing command...
 google is up
 ```
 
@@ -53,11 +54,11 @@ the timeout value to 0 will disable the timeout:
 
 ```text
 $ sh ./wait-for-endpoint.sh -t 0 www.google.com:80 -- echo "google is up"
-Connection to google.fr succeeded with status: 200. Executing command... 
+Connection to google.fr succeeded with status: 200. Executing command...
 google is up
 ```
 
-In combination to timeout, you can set your interval (with the `-i` or `--interval=`) between request attempts. Default is 5s.
+In combination to timeout, you can configure the interval (with the `-i` or `--interval=`) between request attempts. The default value is 5s.
 In the following example, we will choose an interval of 3 seconds, and a timeout of 15 seconds, which means 5 attempts.
 
 Let's try with an unavailable endpoint.
@@ -76,7 +77,7 @@ Attempt 4 of 5.
 Retry in 3 seconds.
 Attempt 5 of 5.
 Retry in 3 seconds.
-Operation timed out 
+Operation timed out
 ```
 
 The subcommand will be executed if the service responds with the desired status. You can choose another status with the `-s` or `--status=`
@@ -92,7 +93,7 @@ $ echo $?
 0
 $ sh ./wait-for-endpoint.sh www.google.com:81
 Retry in 5 seconds.
-Operation timed out 
+Operation timed out
 $ echo $?
 1
 ```
