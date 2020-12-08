@@ -1,4 +1,4 @@
-#!bin/sh
+#!/bin/sh
 
 TIMEOUT=30
 INTERVAL=5
@@ -22,7 +22,7 @@ usage() {
   exitcode="$1"
   cat << USAGE >&2
 Usage:
-  $cmdname host(:port)/path [-q] [-d delay] [-i interval] [-t timeout] [-s status] [-- command args]
+  ./wait_for_endpoint.sh host(:port)/path [-q] [-d delay] [-i interval] [-t timeout] [-s status] [-- command args]
   -q | --quiet                        Do not output any status messages.
   -d DELAY | --delay=delay            Delay before first attempt in seconds. Default is 0s.
   -i INTERVAL | --interval=interval   Interval between attemps in seconds. Default is 5s.
@@ -41,16 +41,16 @@ wait_for_endpoint() {
     sleep $DELAY;
   fi
 
-  for i in `seq 0 $INTERVAL $TIMEOUT` ; do
-    RESULT=$(curl -s -m 2 -o /dev/null -w "%{http_code}" --location $ENDPOINT );
+  for i in $(seq 0 $INTERVAL $TIMEOUT) ; do
+    RESULT=$(curl -s -m 2 -o /dev/null -w "%{http_code}" --location "$ENDPOINT" );
 
     if [ $TIMEOUT -gt 0 ] ; then
       echoinfo "Attempt $((i / INTERVAL)) of $((TIMEOUT / INTERVAL))."
     fi
-    if [ $RESULT -eq $STATUS ] ; then
+    if [ "$RESULT" -eq $STATUS ] ; then
       if [ -n "$command" ] ; then
         echosuccess "Connection to $ENDPOINT succeeded with status: $STATUS. Executing command...";
-        exec $command;
+        exec "$command";
       fi
       exit 0;
     fi
@@ -85,10 +85,6 @@ do
     DELAY="${1#*=}"
     shift 1
     ;;
-    --)
-    shift
-    break
-    ;;
     -i)
     INTERVAL="$2"
     if [ "$INTERVAL" = "" ]; then break; fi
@@ -97,10 +93,6 @@ do
     --interval=*)
     INTERVAL="${1#*=}"
     shift 1
-    ;;
-    --)
-    shift
-    break
     ;;
     -t)
     TIMEOUT="$2"
@@ -124,10 +116,6 @@ do
     shift
     break
     ;;
-    --)
-    shift
-    break
-    ;;
     --help)
     usage 0
     ;;
@@ -138,7 +126,7 @@ do
   esac
 done
 
-if [ "$ENDPOINT" == "" ]; then
+if [ "$ENDPOINT" = "" ]; then
   echoerr "Error: you need to provide a endpoint to test."
   usage 2
 fi
