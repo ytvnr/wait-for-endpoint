@@ -1,0 +1,10 @@
+{
+  "name": "wait-for-endpoint",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "./node_modules/.bin/bats wait-for-endpoint.bats"
+  },
+  "dependencies": {
+    "bats": "^1.2.1"
+  }
+}
