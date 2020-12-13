@@ -23,19 +23,23 @@ sh ./wait-for-endpoint.sh host(:port)/path [-q] [-d delay] [-i interval] [-t tim
   -i INTERVAL | --interval=interval   Interval between attemps in seconds. Default is 5s.
   -t TIMEOUT | --timeout=timeout      Timeout in seconds, zero for no timeout. Default is 30s.
   -s STATUS | --status=status         Status expected from request to be valid. Default is 200.
+  -m MAX_TIME | --max-time=max-time           Maximum time in seconds that you allow curl operation to take. Default is 2s.
+  -h HTTP_METHOD | --http-method=http-method  HTTP method to use for the request. Default is GET.
   -- COMMAND ARGS                     Execute command with args after the test finishes.
 ```
 
 ## Options
 
-| Short 	| Long       	    | Description   	                                | Default value 	|
-|-------	|------------	    |---------------	                                |---------------	|
-| -q    	| --quiet    	    | Do not output any status messages 	            | 0             	|
-| -d    	| --delay    	    | Delay before first attempt in seconds             | 0s               	|
-| -i      	| --interval        | Interval between attemps in seconds               | 5s              	|
-| -t      	| --timeout         | Timeout in seconds, zero for no timeout           | 30s              	|
-| -s      	| --status          | Status expected from request to be valid          | 200              	|
-|       	| -- COMMAND ARGS   | Execute command with args after the test finishes |               	|
+| Short 	| Long       	        | Description   	                                            | Default value 	|
+|-------	|------------	        |---------------	                                            |---------------	|
+| -q    	| --quiet    	        | Do not output any status messages 	                        | 0             	|
+| -d    	| --delay    	        | Delay before first attempt in seconds                         | 0s               	|
+| -i      	| --interval            | Interval between attemps in seconds                           | 5s              	|
+| -t      	| --timeout             | Timeout in seconds, zero for no timeout                       | 30s              	|
+| -s      	| --status              | Status expected from request to be valid                      | 200              	|
+| -m      	| --max-time            | Maximum time in seconds that you allow curl operation to take | 2s              	|
+| -h      	| --http-status         | HTTP method to use for the request                            | GET              	|
+|       	| -- COMMAND ARGS       | Execute command with args after the test finishes             |               	|
 
 ## Examples
 

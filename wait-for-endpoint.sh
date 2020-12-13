@@ -5,6 +5,8 @@ INTERVAL=5
 DELAY=0
 STATUS=200
 QUIET=0
+MAX_TIME=2
+HTTP_METHOD=GET
 
 echoerr() {
   if [ "$QUIET" -ne 1 ]; then printf "\033[0;31m%s \033[0m\n" "$*" 1>&2; fi
@@ -23,12 +25,14 @@ usage() {
   cat << USAGE >&2
 Usage:
   ./wait_for_endpoint.sh host(:port)/path [-q] [-d delay] [-i interval] [-t timeout] [-s status] [-- command args]
-  -q | --quiet                        Do not output any status messages.
-  -d DELAY | --delay=delay            Delay before first attempt in seconds. Default is 0s.
-  -i INTERVAL | --interval=interval   Interval between attemps in seconds. Default is 5s.
-  -t TIMEOUT | --timeout=timeout      Timeout in seconds, zero for no timeout. Default is 30s.
-  -s STATUS | --status=status         Status expected from request to be valid. Default is 200.
-  -- COMMAND ARGS                     Execute command with args after the test finishes.
+  -q | --quiet                                Do not output any status messages.
+  -d DELAY | --delay=delay                    Delay before first attempt in seconds. Default is 0s.
+  -i INTERVAL | --interval=interval           Interval between attemps in seconds. Default is 5s.
+  -t TIMEOUT | --timeout=timeout              Timeout in seconds, zero for no timeout. Default is 30s.
+  -s STATUS | --status=status                 Status expected from request to be valid. Default is 200.
+  -m MAX_TIME | --max-time=max-time           Maximum time in seconds that you allow curl operation to take. Default is 2s.
+  -h HTTP_METHOD | --http-method=http-method  HTTP method to use for the request. Default is GET.
+  -- COMMAND ARGS                             Execute command with args after the test finishes.
 USAGE
   exit "$exitcode";
 }
@@ -42,7 +46,7 @@ wait_for_endpoint() {
   fi
 
   for i in $(seq 0 $INTERVAL $TIMEOUT) ; do
-    RESULT=$(curl -s -m 2 -o /dev/null -w "%{http_code}" --location "$ENDPOINT" );
+    RESULT=$(curl --silent --request "$HTTP_METHOD" --max-time "$MAX_TIME" --output /dev/null -w "%{http_code}" --location "$ENDPOINT" );
 
     if [ $TIMEOUT -gt 0 ] ; then
       echoinfo "Attempt $((i / INTERVAL)) of $((TIMEOUT / INTERVAL))."
@@ -50,7 +54,7 @@ wait_for_endpoint() {
     if [ "$RESULT" -eq $STATUS ] ; then
       if [ -n "$command" ] ; then
         echosuccess "Connection to $ENDPOINT succeeded with status: $STATUS. Executing command...";
-        exec "$command";
+        eval "$command";
       fi
       exit 0;
     fi
@@ -110,6 +114,24 @@ do
     ;;
     --status=*)
     STATUS="${1#*=}"
+    shift 1
+    ;;
+    -m)
+    MAX_TIME="$2"
+    if [ "$MAX_TIME" = "" ]; then break; fi
+    shift 2
+    ;;
+    --max-time=*)
+    MAX_TIME="${1#*=}"
+    shift 1
+    ;;
+    -h)
+    HTTP_METHOD="$2"
+    if [ "$HTTP_METHOD" = "" ]; then break; fi
+    shift 2
+    ;;
+    --http-method=*)
+    HTTP_METHOD="${1#*=}"
     shift 1
     ;;
     --)
