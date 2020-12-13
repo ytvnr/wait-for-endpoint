@@ -1,4 +1,4 @@
-name: Shell analysis
+name: Shell analysis & Tests
 
 on:
   push:
@@ -16,3 +16,17 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
+  bats-test:
+    name: Run BATS testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@master
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Install
+        run: npm i
+      - name: Test
+        run: npm run test
